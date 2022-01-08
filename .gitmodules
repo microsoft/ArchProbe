@@ -1,0 +1,3 @@
+[submodule "third/libopencl-stub"]
+	path = third/libopencl-stub
+	url = https://github.com/ShireFolk/libopencl-stub

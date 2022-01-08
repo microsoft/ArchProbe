@@ -1,14 +1,48 @@
-# Project
+# ArchProbe
 
-> This repo has been populated by an initial template to help get you started. Please
-> make sure to update the content to build a great experience for community-building.
+ArchProbe is a profiling tool to demythify mobile GPU architectures with great details. The mechanism of ArchProbe is introduced in our technical paper which is still under review.
 
-As the maintainer of this project, please make a few updates:
+![Adreno & Mali Architecture Overview](overview.png)  
+*Architecture details collected with ArchProbe, presented in our technical paper.*
 
-- Improving this README.MD file to provide a great experience
-- Updating SUPPORT.MD with content about this project's support experience
-- Understanding the security reporting process in SECURITY.MD
-- Remove this section from the README
+## How to Use
+
+In a clone of ArchProbe code repository, the following commands build ArchProbe for most mobile devices with a 64-bit ARMv8 architecture.
+
+```powershell
+git submodule update --init --recursive
+mkdir build-android-aarch64 && cd build-android-aarch64
+cmake -DCMAKE_TOOLCHAIN_FILE="$ANDROID_NDK/build/cmake/android.toolchain.cmake" -DANDROID_ABI="arm64-v8a" -DANDROID_PLATFORM=android-28 -G "Ninja" ..
+cmake --build . -t ArchProbe
+```
+
+To run ArchProbe in command line via `adb shell`, you need to copy the executables to `/data/local/tmp`.
+
+If you are using Windows, the PowerShell scripts in `scripts` can be convenient too:
+
+```powershell
+scripts/Run-Android.ps1 [-Verbose]
+```
+
+### Prebuilt Binaries
+
+Prebuilt binaries will be available [here](https://github.com/PENGUINLIONG/graphi-t/releases).
+
+## How to Interpret Outputs
+
+A GPU hardware has many traits like GFLOPS and cache size. ArchProbe implements a bag of tricks to expose these traits and each implementation is called an *aspect*. Each aspect has its own configurations in `ArchProbe.json`, reports in `ArchProbeReport.json`, and data table of every run of probing kernels in `[ASPECT_NAME].csv`. Currently ArchProbe implements the following aspects:
+
+- `WarpSizeMethod{A|B}` Two methods to detect the warp size of a GPU core;
+- `GFLOPS` Peak computational throughput of the device;
+- `RegCount` Number of registers available to a thread and whether the register file is shared among warps;
+- `BufferVecWidth` Optimal vector width to read the most data in a single memory access;
+- `{Image|Buffer}CachelineSize` Top level cacheline size of image/buffer;
+- `{Image|Buffer}Bandwidth` Peak read-only bandwidth of image/buffer;
+- `{Image|Buffer}CacheHierarchyPChase` Size of each level of cache of image/buffer by the P-chase method.
+
+If the `-v` flag is given, ArchProbe prints extra human-readable logs to `stdout` which is also a good source of information.
+
+Experiment data gathered from Google Pixel 4 can be found [here](examples/adreno640/Google_Pixel_4).
 
 ## Contributing
 
