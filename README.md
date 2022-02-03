@@ -26,7 +26,7 @@ scripts/Run-Android.ps1 [-Verbose]
 
 ### Prebuilt Binaries
 
-Prebuilt binaries will be available [here](https://github.com/PENGUINLIONG/graphi-t/releases).
+Prebuilt binaries will be available [here](https://github.com/Microsoft/ArchProbe/releases).
 
 ## How to Interpret Outputs
 
@@ -43,6 +43,13 @@ A GPU hardware has many traits like GFLOPS and cache size. ArchProbe implements 
 If the `-v` flag is given, ArchProbe prints extra human-readable logs to `stdout` which is also a good source of information.
 
 Experiment data gathered from Google Pixel 4 can be found [here](examples/adreno640/Google_Pixel_4).
+
+## Tweaking ArchProbe
+
+ArchProbe allows you to adjsut the sensitivity of the probing algorithms in each aspect. In the config file (by default the generated `ArchProbe.json`), each aspect has a `Threshold` for the algorithm to decide whether the difference in timing is significant enough to be identified as a numerical jump; `Compensate` helps the algorithm to smooth out step-like outputs, for example in cache hierarchy probing.
+In some of the aspects (like `RegCount`) ArchProbe also allows you to choose the parameter space, namely `XxxMin`, `XxxMax` and `XxxStep`. But in most of the cases, you can rely on the default ranges ArchProbe derived from the device.
+
+Although ArchProbe has algorithms to conclude semantical data like bandwidth and computational throughput from execution timing, these algorithms are susceptible to noisy outputs especially under thermal throttling. So it's too recommended to plot the timing data in `.csv` files to have a better understanding of the architecture.
 
 ## Contributing
 

@@ -1,11 +1,16 @@
 param(
     [switch] $Verbose,
     [switch] $BuildOnly,
-    [string] $ClearAspect
+    [string] $ClearAspect,
+    [string] $Arch
 )
 
-if (-not(Test-Path "build-android-aarch64")) {
-    New-Item "build-android-aarch64" -ItemType Directory
+if (-not $Arch) {
+    $Arch = "armeabi-v7a"
+}
+
+if (-not(Test-Path "build-android-$Arch")) {
+    New-Item "build-android-$Arch" -ItemType Directory
 }
 
 $NdkHome = $null
@@ -21,8 +26,8 @@ if ($NdkHome -eq $null) {
     return -1
 }
 
-Push-Location "build-android-aarch64"
-cmake -DCMAKE_TOOLCHAIN_FILE="$NdkHome/build/cmake/android.toolchain.cmake" -DANDROID_ABI="arm64-v8a" -DANDROID_PLATFORM=android-28 -G "Ninja" ..
+Push-Location "build-android-$Arch"
+cmake -DCMAKE_TOOLCHAIN_FILE="$NdkHome/build/cmake/android.toolchain.cmake" -DANDROID_ABI="$Arch" -DANDROID_PLATFORM=android-28 -G "Ninja" ..
 cmake --build . -t ArchProbe
 Pop-Location
 
@@ -39,7 +44,7 @@ if ($ClearAspect) {
 }
 
 adb reconnect offline
-adb push ./build-android-aarch64/assets/ /data/local/tmp/gpu-testbench/
-adb push ./build-android-aarch64/bin/ /data/local/tmp/gpu-testbench/
-adb shell chmod 777 /data/local/tmp/gpu-testbench/bin/ArchProbe
-adb shell "cd /data/local/tmp/gpu-testbench/bin && ./ArchProbe $Args"
+adb push ./build-android-$Arch/assets/ /data/local/tmp/archprobe/
+adb push ./build-android-$Arch/bin/ /data/local/tmp/archprobe/
+adb shell chmod 777 /data/local/tmp/archprobe/bin/ArchProbe
+adb shell "cd /data/local/tmp/archprobe/bin && ./ArchProbe $Args"

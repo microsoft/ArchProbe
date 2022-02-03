@@ -1,5 +1,5 @@
-if (Test-Path tmp/gpu-testbench) {
-    Remove-Item tmp/gpu-testbench -Recurse -Force
+if (Test-Path tmp/archprobe) {
+    Remove-Item tmp/archprobe -Recurse -Force
 }
 
-adb shell rm -r /data/local/tmp/gpu-testbench
+adb shell rm -r /data/local/tmp/archprobe
