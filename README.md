@@ -1,8 +1,19 @@
 # ArchProbe
 
-ArchProbe is a profiling tool to demythify mobile GPU architectures with great details. The mechanism of ArchProbe is introduced in our technical paper which is still under review.
+ArchProbe is a profiling tool to demythify and quantify mobile GPU architectures with great details. The mechanism of ArchProbe is introduced in our MobiCom'22 paper ["Romou: Rapidly Generate High-Performance Tensor Kernels for Mobile GPUs"](https://www.microsoft.com/en-us/research/publication/romou-rapidly-generate-high-performance-tensor-kernels-for-mobile-gpus/). We appreciate you cite the paper for using this tool. 
 
-![Adreno & Mali Architecture Overview](overview.png)  
+@inproceedings{liang2022romou,  
+  author = {Liang, Rendong and Cao, Ting and Wen, Jicheng and Wang, Manni and Wang, Yang and Zou, Jianhua and Liu, Yunxin},  
+  title = {Romou: Rapidly Generate High-Performance Tensor Kernels for Mobile GPUs},  
+  booktitle = {The 28th Annual International Conference On Mobile Computing And Networking (MobiCom 2022)},  
+  year = {2022},  
+  month = {February},  
+  publisher = {ACM},  
+  doi = {10.1145/3495243.3517020},  
+}
+
+Examples of Architecture Overview prodiled by ArchProbe for Adreno 640 and Mali G76
+![Examples of Architecture Overview prodiled by ArchProbe for Adreno 640 and Mali G76](overview.png)  
 *Architecture details collected with ArchProbe, presented in our technical paper.*
 
 ## How to Use
