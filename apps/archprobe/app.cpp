@@ -1004,7 +1004,7 @@ namespace aspects {
 
     MaxStats<double> max_bandwidth {};
     MinStats<double> min_bandwidth {};
-    for (size_t access_size = VEC_SIZE; access_size < RANGE; access_size *= 1) {
+    for (size_t access_size = VEC_SIZE; access_size < RANGE; access_size *= 2) {
       double gbps = bench(access_size);
       max_bandwidth.push(gbps);
       min_bandwidth.push(gbps);
