@@ -6,7 +6,7 @@ param(
 )
 
 if (-not $Arch) {
-    $Arch = "armeabi-v7a"
+    $Arch = "arm64-v8a"
 }
 
 if (-not(Test-Path "build-android-$Arch")) {

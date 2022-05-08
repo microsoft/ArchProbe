@@ -1,1 +1,86 @@
-{"BufferBandwidth":{"Done":true,"MaxBandwidth":96.3256,"MinBandwidth":30.0554},"BufferCacheHierarchyPChase":{"CacheVectorCountLv1":125744,"CacheVectorCountLv2":132608,"CacheVectorCountLv3":133728,"CacheVectorCountLv4":136080,"Done":true},"BufferCachelineSize":{"BufTopLevelCachelineSize":64,"Done":true},"BufferVecWidth":{"BufferVecSize":4,"Done":true},"Device":{"CacheSize":131072,"CachelineSize":64,"Done":true,"LogicThreadCount":1024,"MaxBufferSize":2.87688e+09,"MaxImageHeight":16384,"MaxImageWidth":16384,"PageSize_QCOM":4096,"SmCount":2},"Gflops":{"Done":true,"FloatArch":"SISD","FloatGflops":889.891,"FloatVecComponentCount":1,"HalfArch":"SISD","HalfGflops":890.087,"HalfVecComponentCount":1},"ImageBandwidth":{"Done":true,"MaxBandwidth":194.55,"MinBandwidth":68.174},"ImageCacheHierarchyPChase":{"CachePixelCountLv1":1024,"CachePixelCountLv2":139504,"Done":true},"ImageCachelineSize":{"Done":true,"ImgCachelineDim":"X","ImgCachelineSize":32,"ImgMinTimeConcurThreadCountX":64,"ImgMinTimeConcurThreadCountY":32},"RegCount":{"Done":true,"FullRegConcurWorkgroupCount":12,"HalfRegConcurWorkgroupCount":24,"RegCount":183,"RegType":"Pooled"},"WarpSizeMethodA":{"Done":true,"WarpThreadCount":128},"WarpSizeMethodB":{"Done":true,"WarpThreadCount":64}}
+{
+    "BufferBandwidth": {
+        "Done": true,
+        "MaxBandwidth": 96.3256,
+        "MinBandwidth": 30.0554
+    },
+    "BufferCacheHierarchyPChase": {
+        "CacheVectorCountLv1": 125744,
+        "CacheVectorCountLv2": 132608,
+        "CacheVectorCountLv3": 133728,
+        "CacheVectorCountLv4": 136080,
+        "Done": true
+    },
+    "BufferCachelineSize": {
+        "BufTopLevelCachelineSize": 64,
+        "Done": true
+    },
+    "BufferVecWidth": {
+        "BufferVecSize": 4,
+        "Done": true
+    },
+    "ConstMemBandwidth": {
+        "Done": true,
+        "MaxBandwidth": 95.2991,
+        "MinBandwidth": 35.801
+    },
+    "Device": {
+        "CacheSize": 131072,
+        "CachelineSize": 64,
+        "Done": true,
+        "LogicThreadCount": 1024,
+        "MaxBufferSize": 2.86618e+09,
+        "MaxConstMemSize": 65536,
+        "MaxImageHeight": 16384,
+        "MaxImageWidth": 16384,
+        "MaxLocalMemSize": 32768,
+        "PageSize_QCOM": 4096,
+        "SmCount": 2
+    },
+    "Gflops": {
+        "Done": true,
+        "FloatArch": "SISD",
+        "FloatGflops": 889.891,
+        "FloatVecComponentCount": 1,
+        "HalfArch": "SISD",
+        "HalfGflops": 890.087,
+        "HalfVecComponentCount": 1
+    },
+    "ImageBandwidth": {
+        "Done": true,
+        "MaxBandwidth": 194.55,
+        "MinBandwidth": 68.174
+    },
+    "ImageCacheHierarchyPChase": {
+        "CachePixelCountLv1": 1024,
+        "CachePixelCountLv2": 139504,
+        "Done": true
+    },
+    "ImageCachelineSize": {
+        "Done": true,
+        "ImgCachelineDim": "X",
+        "ImgCachelineSize": 32,
+        "ImgMinTimeConcurThreadCountX": 64,
+        "ImgMinTimeConcurThreadCountY": 32
+    },
+    "LocalMemBandwidth": {
+        "Done": true,
+        "MaxBandwidth": 145.798,
+        "MinBandwidth": 98.7546
+    },
+    "RegCount": {
+        "Done": true,
+        "FullRegConcurWorkgroupCount": 12,
+        "HalfRegConcurWorkgroupCount": 24,
+        "RegCount": 183,
+        "RegType": "Pooled"
+    },
+    "WarpSizeMethodA": {
+        "Done": true,
+        "WarpThreadCount": 128
+    },
+    "WarpSizeMethodB": {
+        "Done": true,
+        "WarpThreadCount": 64
+    }
+}
