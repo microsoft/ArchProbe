@@ -1,1 +1,42 @@
-{"BufferCacheHierarchyPChase":{"Compensate":0.01,"DataSizeMax":8.38861e+06,"Threshold":10},"BufferCachelineSize":{"Compensate":0.01,"Threshold":10},"BufferVecWidth":{"Compensate":0.01,"Threshold":10},"Gflops":{"Compensate":0.01,"Threshold":10},"ImageCacheHierarchyPChase":{"Compensate":0.01,"DataSizeMax":262144,"Threshold":10},"ImageCachelineSize":{"Compensate":0.01,"Threshold":10},"RegCount":{"Compensate":0.01,"NGrpMax":64,"NGrpMin":1,"NGrpStep":1,"NRegMax":512,"NRegMin":1,"NRegStep":1,"Threshold":10},"WarpSizeMethodB":{"Compensate":0.01,"Threshold":10}}
+{
+    "BufferCacheHierarchyPChase": {
+        "Compensate": 0.01,
+        "DataSizeMax": 8.38861e+06,
+        "Threshold": 10
+    },
+    "BufferCachelineSize": {
+        "Compensate": 0.01,
+        "Threshold": 10
+    },
+    "BufferVecWidth": {
+        "Compensate": 0.01,
+        "Threshold": 10
+    },
+    "Gflops": {
+        "Compensate": 0.01,
+        "Threshold": 10
+    },
+    "ImageCacheHierarchyPChase": {
+        "Compensate": 0.01,
+        "DataSizeMax": 262144,
+        "Threshold": 10
+    },
+    "ImageCachelineSize": {
+        "Compensate": 0.01,
+        "Threshold": 10
+    },
+    "RegCount": {
+        "Compensate": 0.01,
+        "NGrpMax": 64,
+        "NGrpMin": 1,
+        "NGrpStep": 1,
+        "NRegMax": 512,
+        "NRegMin": 1,
+        "NRegStep": 1,
+        "Threshold": 10
+    },
+    "WarpSizeMethodB": {
+        "Compensate": 0.01,
+        "Threshold": 10
+    }
+}

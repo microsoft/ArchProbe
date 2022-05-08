@@ -20,6 +20,8 @@ ninja: no work to do.
 [INFO]     reported 'SmCount' = '2'
 [INFO]     reported 'LogicThreadCount' = '1024'
 [INFO]     reported 'MaxBufferSize' = '2876878848'
+[INFO]     reported 'MaxConstMemSize' = '65536'
+[INFO]     reported 'MaxLocalMemSize' = '32768'
 [INFO]     reported 'CacheSize' = '131072'
 [INFO]     reported 'CachelineSize' = '64'
 [INFO]     reported 'MaxImageWidth' = '16384'
@@ -757,6 +759,51 @@ ninja: no work to do.
 [INFO]     discovered buffer read bandwidth min=30.0554; max=96.3256
 [INFO]     reported 'Done' = '1'
 [INFO]     saved data table to 'BufferBandwidth.csv'
+[INFO] [ConstMemBandwidth]
+[INFO]     initialized table for aspect 'ConstMemBandwidth'
+[INFO]     already know that 'LogicThreadCount' from aspect 'Device' is 1024
+[INFO]     already know that 'SmCount' from aspect 'Device' is 2
+[INFO]     already know that 'MaxConstMemSize' from aspect 'Device' is 65536
+[DEBUG]     constant memory bandwidth accessing 16B unique data is 70.6921 gbps (1898.62 us)
+[DEBUG]     constant memory bandwidth accessing 32B unique data is 70.778 gbps (1896.32 us)
+[DEBUG]     constant memory bandwidth accessing 64B unique data is 36.8672 gbps (3640.58 us)
+[DEBUG]     constant memory bandwidth accessing 128B unique data is 35.8255 gbps (3746.43 us)
+[DEBUG]     constant memory bandwidth accessing 256B unique data is 64.1723 gbps (2091.52 us)
+[DEBUG]     constant memory bandwidth accessing 512B unique data is 68.3512 gbps (1963.65 us)
+[DEBUG]     constant memory bandwidth accessing 1024B unique data is 69.4329 gbps (1933.06 us)
+[DEBUG]     constant memory bandwidth accessing 2048B unique data is 93.2814 gbps (1438.85 us)
+[DEBUG]     constant memory bandwidth accessing 4096B unique data is 93.6982 gbps (1432.45 us)
+[DEBUG]     constant memory bandwidth accessing 8192B unique data is 94.9539 gbps (1413.5 us)
+[DEBUG]     constant memory bandwidth accessing 16384B unique data is 95.2645 gbps (1408.9 us)
+[DEBUG]     constant memory bandwidth accessing 32768B unique data is 95.1176 gbps (1411.07 us)
+[WARN]     aspect report ('ConstMemBandwidth') is invalid, a new record is created
+[INFO]     reported 'MaxBandwidth' = '95.2645'
+[INFO]     reported 'MinBandwidth' = '35.8255'
+[INFO]     discovered constant memory read bandwidth min=35.8255; max=95.2645
+[INFO]     reported 'Done' = '1'
+[INFO]     saved data table to 'ConstMemBandwidth.csv'
+[INFO] [LocalMemBandwidth]
+[INFO]     initialized table for aspect 'LocalMemBandwidth'
+[INFO]     already know that 'LogicThreadCount' from aspect 'Device' is 1024
+[INFO]     already know that 'SmCount' from aspect 'Device' is 2
+[INFO]     already know that 'MaxLocalMemSize' from aspect 'Device' is 32768
+[DEBUG]     local memory bandwidth accessing 16B unique data is 145.757 gbps (460.416 us)
+[DEBUG]     local memory bandwidth accessing 32B unique data is 145.434 gbps (461.44 us)
+[DEBUG]     local memory bandwidth accessing 64B unique data is 139.847 gbps (479.872 us)
+[DEBUG]     local memory bandwidth accessing 128B unique data is 100.708 gbps (666.368 us)
+[DEBUG]     local memory bandwidth accessing 256B unique data is 98.8104 gbps (679.168 us)
+[DEBUG]     local memory bandwidth accessing 512B unique data is 101.37 gbps (662.016 us)
+[DEBUG]     local memory bandwidth accessing 1024B unique data is 101.685 gbps (659.968 us)
+[DEBUG]     local memory bandwidth accessing 2048B unique data is 102.902 gbps (652.16 us)
+[DEBUG]     local memory bandwidth accessing 4096B unique data is 102.923 gbps (652.032 us)
+[DEBUG]     local memory bandwidth accessing 8192B unique data is 103.227 gbps (650.112 us)
+[DEBUG]     local memory bandwidth accessing 16384B unique data is 103.064 gbps (651.136 us)
+[WARN]     aspect report ('LocalMemBandwidth') is invalid, a new record is created
+[INFO]     reported 'MaxBandwidth' = '145.757'
+[INFO]     reported 'MinBandwidth' = '98.8104'
+[INFO]     discovered local memory read bandwidth min=98.8104; max=145.757
+[INFO]     reported 'Done' = '1'
+[INFO]     saved data table to 'LocalMemBandwidth.csv'
 [INFO] [ImageCacheHierarchyPChase]
 [INFO]     initialized table for aspect 'ImageCacheHierarchyPChase'
 [INFO]     already know that 'MaxImageWidth' from aspect 'Device' is 16384

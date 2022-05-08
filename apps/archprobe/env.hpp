@@ -32,6 +32,9 @@ struct DeviceReport {
   size_t buf_size_max;
   size_t buf_cache_size;
 
+  size_t const_mem_size_max;
+  size_t local_mem_size_max;
+
   bool support_img;
   uint32_t img_width_max;
   uint32_t img_height_max;

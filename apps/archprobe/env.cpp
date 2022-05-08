@@ -27,6 +27,11 @@ DeviceReport collect_dev_report(const cl::Device& dev) {
     dev.getInfo<CL_DEVICE_GLOBAL_MEM_CACHELINE_SIZE>();
   dev_report.buf_size_max = dev.getInfo<CL_DEVICE_GLOBAL_MEM_SIZE>();
   dev_report.buf_cache_size = dev.getInfo<CL_DEVICE_GLOBAL_MEM_CACHE_SIZE>();
+  // Special memory detail.
+  dev_report.const_mem_size_max =
+    dev.getInfo<CL_DEVICE_MAX_CONSTANT_BUFFER_SIZE>();
+  dev_report.local_mem_size_max =
+    dev.getInfo<CL_DEVICE_LOCAL_MEM_SIZE>();
   // Image memory detail.
   dev_report.support_img = dev.getInfo<CL_DEVICE_IMAGE_SUPPORT>();
   if (dev_report.support_img) {
@@ -108,6 +113,8 @@ void report_dev(Environment& env) {
   env.report_value("SmCount", env.dev_report.nsm);
   env.report_value("LogicThreadCount", env.dev_report.nthread_logic);
   env.report_value("MaxBufferSize", env.dev_report.buf_size_max);
+  env.report_value("MaxConstMemSize", env.dev_report.const_mem_size_max);
+  env.report_value("MaxLocalMemSize", env.dev_report.local_mem_size_max);
   env.report_value("CacheSize", env.dev_report.buf_cache_size);
   env.report_value("CachelineSize", env.dev_report.buf_cacheline_size);
   if (env.dev_report.support_img) {

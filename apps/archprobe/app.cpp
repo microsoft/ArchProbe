@@ -1019,6 +1019,198 @@ namespace aspects {
     env.report_ready(done);
   }
 
+  void const_mem_bandwidth(Environment& env) {
+    if (env.report_started_lazy("ConstMemBandwidth")) { return; }
+    env.init_table("range (byte)", "t (us)", "bandwidth (gbps)");
+    bool done = true;
+
+    const int NTHREAD_WARP =
+      env.must_get_aspect_report<uint32_t>("Device", "LogicThreadCount");
+    const int NSM =
+      env.must_get_aspect_report<uint32_t>("Device", "SmCount");
+    const size_t RANGE =
+      env.must_get_aspect_report<uint32_t>("Device", "MaxConstMemSize");
+
+    // Size configs in bytes. These settings should be adjusted by hand.
+    const uint32_t VEC_WIDTH = 4;
+    const uint32_t NFLUSH = 16;
+    const uint32_t NUNROLL = 16;
+    const uint32_t NITER = 4;
+    const uint32_t NREAD_PER_THREAD = NUNROLL * NITER;
+
+    const size_t VEC_SIZE = VEC_WIDTH * sizeof(float);
+    auto bench = [&](size_t access_size) {
+      const size_t CACHE_SIZE = access_size;
+
+      const size_t NVEC = RANGE / VEC_SIZE;
+      const size_t NVEC_CACHE = CACHE_SIZE / VEC_SIZE;
+
+      // The thread count is doesn't divide by thread workload basically because
+      // of the limited memory size. Constant memory and local memory are
+      // usually sub-MB level but buffer and images can go upto gigs.
+      const int nthread_total = NVEC;
+      const int local_x = NTHREAD_WARP;
+      const int global_x = (nthread_total / local_x * local_x) * NSM * NFLUSH;
+      //log::debug("local_x=", local_x, "; global_x=", global_x);
+
+      auto src = util::format(R"(
+        __kernel void const_mem_bandwidth(
+          __constant float4 *A,
+          __global float4 *B,
+          __private const int niter,
+          __private const int addr_mask
+        ) {
+          float4 sum = 0;
+          int offset = (get_group_id(0) * )", local_x * NREAD_PER_THREAD,
+          R"( + get_local_id(0)) & addr_mask;
+
+          for (int i = 0; i < niter; ++i)
+          {)", [&]() {
+            std::stringstream ss;
+            for (int i = 0; i < NUNROLL; ++i) {
+              ss << "sum *= A[offset]; offset = (offset + " << local_x
+                << ") & addr_mask;\n";
+            }
+            return ss.str();
+            }(), R"(
+          }
+          B[get_local_id(0)] = sum;
+        })");
+      //log::debug(src);
+      cl::Program program = env.create_program(src, "");
+      cl::Kernel kernel = env.create_kernel(program, "const_mem_bandwidth");
+
+      cl::Buffer in_buf = env.create_buf(0, CACHE_SIZE);
+      cl::Buffer out_buf = env.create_buf(0, VEC_SIZE * NTHREAD_WARP);
+
+      cl::NDRange global(global_x, 1, 1);
+      cl::NDRange local(local_x, 1, 1);
+
+      kernel.setArg(0, in_buf);
+      kernel.setArg(1, out_buf);
+      kernel.setArg(2, int(NITER));
+      kernel.setArg(3, int(NVEC_CACHE - 1));
+      auto time = env.bench_kernel(kernel, local, global, 10);
+      const size_t SIZE_TRANS = global_x * NREAD_PER_THREAD * VEC_SIZE;
+      auto gbps = SIZE_TRANS * 1e-3 / time;
+      log::debug("constant memory bandwidth accessing ", access_size,
+        "B unique data is ", gbps, " gbps (", time, " us)");
+      env.table().push(access_size, time, gbps);
+      return gbps;
+    };
+
+    MaxStats<double> max_bandwidth {};
+    MinStats<double> min_bandwidth {};
+    for (size_t access_size = VEC_SIZE; access_size < RANGE; access_size *= 2) {
+      double gbps = bench(access_size);
+      max_bandwidth.push(gbps);
+      min_bandwidth.push(gbps);
+    }
+
+    env.report_value("MaxBandwidth", max_bandwidth);
+    env.report_value("MinBandwidth", min_bandwidth);
+
+    log::info("discovered constant memory read bandwidth min=",
+      (double)min_bandwidth, "; max=", (double)max_bandwidth);
+
+    env.report_ready(done);
+  }
+
+  void local_mem_bandwidth(Environment& env) {
+    if (env.report_started_lazy("LocalMemBandwidth")) { return; }
+    env.init_table("range (byte)", "t (us)", "bandwidth (gbps)");
+    bool done = true;
+
+    const int NTHREAD_LOGIC =
+      env.must_get_aspect_report<uint32_t>("Device", "LogicThreadCount");
+    const int NSM =
+      env.must_get_aspect_report<uint32_t>("Device", "SmCount");
+    const size_t RANGE =
+      env.must_get_aspect_report<uint32_t>("Device", "MaxLocalMemSize");
+
+    // Size configs in bytes. These settings should be adjusted by hand.
+    const uint32_t VEC_WIDTH = 4;
+    const uint32_t NFLUSH = 16;
+    const uint32_t NUNROLL = 16;
+    const uint32_t NITER = 4;
+    const uint32_t NREAD_PER_THREAD = NUNROLL * NITER;
+
+    const size_t VEC_SIZE = VEC_WIDTH * sizeof(float);
+    auto bench = [&](size_t access_size) {
+      const size_t CACHE_SIZE = access_size;
+
+      const size_t NVEC = RANGE / VEC_SIZE;
+      const size_t NVEC_CACHE = CACHE_SIZE / VEC_SIZE;
+
+      const int nthread_total = NVEC;
+      const int local_x = NTHREAD_LOGIC;
+      const int global_x = (nthread_total / local_x * local_x) * NSM * NFLUSH;
+      //log::debug("local_x=", local_x, "; global_x=", global_x);
+
+      auto src = util::format(R"(
+        __kernel void local_mem_bandwidth(
+          __global float4 *B,
+          __private const int niter,
+          __private const int addr_mask
+        ) {
+          __local float4 A[)", CACHE_SIZE / VEC_SIZE, R"(];
+          A[get_local_id(0)] = get_local_id(0);
+          barrier(CLK_LOCAL_MEM_FENCE);
+
+          float4 sum = 0;
+          int offset = (get_group_id(0) * )", local_x * NREAD_PER_THREAD,
+          R"( + get_local_id(0)) & addr_mask;
+
+          for (int i = 0; i < niter; ++i)
+          {)", [&]() {
+            std::stringstream ss;
+            for (int i = 0; i < NUNROLL; ++i) {
+              ss << "sum *= A[offset]; offset = (offset + " << local_x
+                << ") & addr_mask;\n";
+            }
+            return ss.str();
+            }(), R"(
+          }
+          B[get_local_id(0)] = sum;
+        })");
+      //log::debug(src);
+      cl::Program program = env.create_program(src, "");
+      cl::Kernel kernel = env.create_kernel(program, "local_mem_bandwidth");
+
+      cl::Buffer out_buf = env.create_buf(0, VEC_SIZE * NTHREAD_LOGIC);
+
+      cl::NDRange global(global_x, 1, 1);
+      cl::NDRange local(local_x, 1, 1);
+
+      kernel.setArg(0, out_buf);
+      kernel.setArg(1, int(NITER));
+      kernel.setArg(2, int(NVEC_CACHE - 1));
+      auto time = env.bench_kernel(kernel, local, global, 10);
+      const size_t SIZE_TRANS = global_x * NREAD_PER_THREAD * VEC_SIZE;
+      auto gbps = SIZE_TRANS * 1e-3 / time;
+      log::debug("local memory bandwidth accessing ", access_size,
+        "B unique data is ", gbps, " gbps (", time, " us)");
+      env.table().push(access_size, time, gbps);
+      return gbps;
+    };
+
+    MaxStats<double> max_bandwidth {};
+    MinStats<double> min_bandwidth {};
+    for (size_t access_size = VEC_SIZE; access_size < RANGE; access_size *= 2) {
+      double gbps = bench(access_size);
+      max_bandwidth.push(gbps);
+      min_bandwidth.push(gbps);
+    }
+
+    env.report_value("MaxBandwidth", max_bandwidth);
+    env.report_value("MinBandwidth", min_bandwidth);
+
+    log::info("discovered local memory read bandwidth min=",
+      (double)min_bandwidth, "; max=", (double)max_bandwidth);
+
+    env.report_ready(done);
+  }
+
   // This aspect tests the warping of the SMs. A warp is an atomic schedule unit
   // where all threads in a warp can be executed in parallel. An GPU SM usually
   // consumes more threads than it physically can so that it can hide the
@@ -1497,16 +1689,18 @@ void guarded_main(const std::string& clear_aspect) {
   APP = std::make_unique<ArchProbe>(0);
   APP->clear_aspect_report(clear_aspect);
   (*APP)
-    .with_aspect(aspects::warp_size)
-    .with_aspect(aspects::gflops)
-    .with_aspect(aspects::reg_count)
-    .with_aspect(aspects::buf_vec_width)
-    .with_aspect(aspects::img_cacheline_size)
-    .with_aspect(aspects::buf_cacheline_size)
-    .with_aspect(aspects::img_bandwidth)
-    .with_aspect(aspects::buf_bandwidth)
-    .with_aspect(aspects::img_cache_hierarchy_pchase)
-    .with_aspect(aspects::buf_cache_hierarchy_pchase)
+    //.with_aspect(aspects::warp_size)
+    //.with_aspect(aspects::gflops)
+    //.with_aspect(aspects::reg_count)
+    //.with_aspect(aspects::buf_vec_width)
+    //.with_aspect(aspects::img_cacheline_size)
+    //.with_aspect(aspects::buf_cacheline_size)
+    //.with_aspect(aspects::img_bandwidth)
+    //.with_aspect(aspects::buf_bandwidth)
+    .with_aspect(aspects::const_mem_bandwidth)
+    .with_aspect(aspects::local_mem_bandwidth)
+    //.with_aspect(aspects::img_cache_hierarchy_pchase)
+    //.with_aspect(aspects::buf_cache_hierarchy_pchase)
   ;
 
   APP.reset();

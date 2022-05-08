@@ -50,7 +50,7 @@ A GPU hardware has many traits like GFLOPS and cache size. ArchProbe implements 
 - `RegCount` Number of registers available to a thread and whether the register file is shared among warps;
 - `BufferVecWidth` Optimal vector width to read the most data in a single memory access;
 - `{Image|Buffer}CachelineSize` Top level cacheline size of image/buffer;
-- `{Image|Buffer}Bandwidth` Peak read-only bandwidth of image/buffer;
+- `{Image|Buffer|ConstMem|LocalMem}Bandwidth` Peak read-only bandwidth of image/buffer/constant/local memory;
 - `{Image|Buffer}CacheHierarchyPChase` Size of each level of cache of image/buffer by the P-chase method.
 
 If the `-v` flag is given, ArchProbe prints extra human-readable logs to `stdout` which is also a good source of information.
