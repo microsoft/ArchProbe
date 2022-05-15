@@ -219,7 +219,7 @@ namespace aspects {
           )", reg_reduce, R"(
         }
       )");
-      //log::debug(src);
+      log::debug(src);
       cl::Program program = env.create_program(src, "");
       cl::Kernel kernel = env.create_kernel(program, "reg_count");
       kernel.setArg(0, out_buf);
@@ -1689,18 +1689,18 @@ void guarded_main(const std::string& clear_aspect) {
   APP = std::make_unique<ArchProbe>(0);
   APP->clear_aspect_report(clear_aspect);
   (*APP)
-    //.with_aspect(aspects::warp_size)
-    //.with_aspect(aspects::gflops)
-    //.with_aspect(aspects::reg_count)
-    //.with_aspect(aspects::buf_vec_width)
-    //.with_aspect(aspects::img_cacheline_size)
-    //.with_aspect(aspects::buf_cacheline_size)
-    //.with_aspect(aspects::img_bandwidth)
-    //.with_aspect(aspects::buf_bandwidth)
+    .with_aspect(aspects::warp_size)
+    .with_aspect(aspects::gflops)
+    .with_aspect(aspects::reg_count)
+    .with_aspect(aspects::buf_vec_width)
+    .with_aspect(aspects::img_cacheline_size)
+    .with_aspect(aspects::buf_cacheline_size)
+    .with_aspect(aspects::img_bandwidth)
+    .with_aspect(aspects::buf_bandwidth)
     .with_aspect(aspects::const_mem_bandwidth)
     .with_aspect(aspects::local_mem_bandwidth)
-    //.with_aspect(aspects::img_cache_hierarchy_pchase)
-    //.with_aspect(aspects::buf_cache_hierarchy_pchase)
+    .with_aspect(aspects::img_cache_hierarchy_pchase)
+    .with_aspect(aspects::buf_cache_hierarchy_pchase)
   ;
 
   APP.reset();
